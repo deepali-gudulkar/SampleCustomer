@@ -18,12 +18,14 @@ import com.pojo.Customer;
 @Path("/customers")
 public class CustomerResource {
 
+	@SuppressWarnings("unchecked")
 	@GET
 	@Produces("application/json")
 	public List<Customer> getCustomers() {
 		CustomerDao dao = new CustomerDao();
+		@SuppressWarnings("rawtypes")
 		List customers = dao.getCustomers();
-		return customers;
+		return (List<Customer>)  customers ;
 	}
 
 	@POST
@@ -39,8 +41,9 @@ public class CustomerResource {
 		boolean status = dao.addCustomer(cust);
 		
 		//TODO -- call another service for status with above boolean value status
-		
-		return Response.ok().build();
+		if(status)
+			return Response.ok().build();
+		return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 	}
 
 	@PUT
@@ -54,13 +57,22 @@ public class CustomerResource {
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		}
 		//TODO -- call another service for status with boolean true
+		/*
+		 * 		When update is performed, we shall call another rest service
+		 * 		from this method with a boolean value and update the status 
+		 * 		of the entity in the database
+		 * 		We can use ClientBuilder to call another rest service by forming
+		 * 		the respective API URL, so if the getCustomers is called, it 
+		 * 		should reflect the updated details on the page 
+		 * 
+		 * */
 		return Response.ok().build();
 	}
 
 	@DELETE
 	@Path("/delete/{id}")
 	@Consumes("application/json")
-	public Response deleteCUstomer(@PathParam("id") int id) {
+	public Response deleteCustomer(@PathParam("id") int id) {
 		CustomerDao dao = new CustomerDao();
 		int count = dao.deleteCustomer(id);
 		if (count == 0) {

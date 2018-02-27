@@ -1,31 +1,41 @@
 package com.pojo;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+
 
 @Entity
-public class Customer {
+@Table(name = "CUSTOMER")
+@XmlRootElement
+public class Customer implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id")
 	private int id;
 
-	@Column
+	@Column(name = "name")
 	private String name;
 
-	@Column
+	@Column(name = "phone")
 	private Long phone;
 
-	@Column
+	@Column(name = "email")
 	private String email;
 
-	@Column
+	@Column(name = "pincode")
 	private String pincode;
 
-	@Column
+	@Column(name = "status")
 	private String status;
 
 	public int getId() {
