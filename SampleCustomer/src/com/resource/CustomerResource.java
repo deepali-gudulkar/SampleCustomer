@@ -2,6 +2,8 @@ package com.resource;
 
 import java.util.List;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -15,9 +17,20 @@ import javax.ws.rs.core.Response;
 import com.dao.CustomerDao;
 import com.pojo.Customer;
 
+/**
+ * @author Deepali
+ *	This class acts as a controller that accepts requests from the outside world
+ *	to fetch the customers,
+ *	to create new customers
+ *	to update existing customers
+ *	to delete customers
+ */
 @Path("/customers")
 public class CustomerResource {
 
+	/**
+	 * @return List<Customer> containing all the customer rows from the database
+	 */
 	@SuppressWarnings("unchecked")
 	@GET
 	@Produces("application/json")
@@ -28,10 +41,14 @@ public class CustomerResource {
 		return (List<Customer>)  customers ;
 	}
 
+	/**
+	 * @param cust
+	 * @return Response OK for creation successful, Response BadRequest for creation failed
+	 */
 	@POST
 	@Path("/create")
 	@Consumes("application/json")
-	public Response addCustomer(Customer cust) {
+	public Response addCustomer(@Valid Customer cust) {
 		cust.setName(cust.getName());
 		cust.setEmail(cust.getEmail());
 		cust.setPhone(cust.getPhone());
@@ -40,46 +57,42 @@ public class CustomerResource {
 		CustomerDao dao = new CustomerDao();
 		boolean status = dao.addCustomer(cust);
 		
-		//TODO -- call another service for status with above boolean value status
 		if(status)
 			return Response.ok().build();
 		return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 	}
 
+	/**
+	 * @param id
+	 * @param cust
+	 * @return Response OK for updation successful, Response BadRequest for updation failed
+	 */
 	@PUT
 	@Path("/update/{id}")
 	@Consumes("application/json")
-	public Response updateCustomer(@PathParam("id") int id, Customer cust) {
+	public Response updateCustomer(@Min(1) @PathParam("id") int id, @Valid Customer cust) {
 		CustomerDao dao = new CustomerDao();
 		int count = dao.updateCustomer(id, cust);
 		if (count == 0) {
-			//TODO -- call another service for status with boolean false
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		}
-		//TODO -- call another service for status with boolean true
-		/*
-		 * 		When update is performed, we shall call another rest service
-		 * 		from this method with a boolean value and update the status 
-		 * 		of the entity in the database
-		 * 		We can use ClientBuilder to call another rest service by forming
-		 * 		the respective API URL, so if the getCustomers is called, it 
-		 * 		should reflect the updated details on the page 
-		 * 
-		 * */
 		return Response.ok().build();
 	}
 
+	
+	/**
+	 * @param id
+	 * @return Response OK for deletion successful, Response BadRequest for deletion failed
+	 */
 	@DELETE
 	@Path("/delete/{id}")
 	@Consumes("application/json")
-	public Response deleteCustomer(@PathParam("id") int id) {
+	public Response deleteCustomer(@Min(1) @PathParam("id") int id) {
 		CustomerDao dao = new CustomerDao();
 		int count = dao.deleteCustomer(id);
 		if (count == 0) {
-			//TODO -- call another service for status with boolean false
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		}
-		//TODO -- call another service for status with boolean true
 		return Response.ok().build();
 	}
 }

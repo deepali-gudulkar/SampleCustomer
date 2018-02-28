@@ -8,13 +8,18 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.xml.bind.annotation.XmlRootElement;
 
-
+/**
+ * @author Deepali
+ *	Pojo class for Customer
+ */
 @Entity
 @Table(name = "CUSTOMER")
-@XmlRootElement
-public class Customer implements Serializable{
+@XmlRootElement(name = "customer")
+public class Customer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -24,18 +29,24 @@ public class Customer implements Serializable{
 	private int id;
 
 	@Column(name = "name")
+	@Pattern(regexp = "[a-zA-Z]+", message = "Invalid Name")
 	private String name;
 
 	@Column(name = "phone")
+	@NotNull
+	@Pattern(regexp = "[0-9]+", message = "Invalid Phone Number")
 	private Long phone;
 
 	@Column(name = "email")
+	@Pattern(regexp = ".+@.+\\.[a-z]+", message = "Invalid Email Address")
 	private String email;
 
 	@Column(name = "pincode")
+	@Pattern(regexp = "^[a-zA-Z0-9]*$|[0-9]+|[a-zA-Z]+", message = "Invalid Pincode")
 	private String pincode;
 
 	@Column(name = "status")
+	@Pattern(regexp = "[a-zA-Z]+", message = "Invalid Status")
 	private String status;
 
 	public int getId() {

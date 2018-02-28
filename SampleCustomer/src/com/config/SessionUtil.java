@@ -8,6 +8,10 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
+/**
+ * @author Deepali
+ *	Class that manages Hibernate sessions
+ */
 @SuppressWarnings("deprecation")
 public class SessionUtil {
 
@@ -18,6 +22,9 @@ public class SessionUtil {
 		return instance;
 	}
 
+	/**
+	 * Private construtor that configures hibernate session factory
+	 */
 	private SessionUtil() {
 		Configuration configuration = new Configuration();  
 	    configuration.configure();  
@@ -30,7 +37,10 @@ public class SessionUtil {
 	        buildSessionFactory(serviceRegistry);  
 		
 	}
-
+	
+	/**
+	 * @return hibernate session from the session factory
+	 */
 	public static Session getSession() {
 		Session session = getInstance().sessionFactory.openSession();
 		return session;

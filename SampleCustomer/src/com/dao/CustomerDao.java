@@ -12,6 +12,9 @@ import com.pojo.Customer;
 
 public class CustomerDao {
 
+	/**
+	 * @return List of customers from the database
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public List getCustomers() {
 		List<Customer> customers = new ArrayList<Customer>();
@@ -26,6 +29,10 @@ public class CustomerDao {
 		return customers;
 	}
 
+	/**
+	 * @param cust
+	 * @return boolean value after addition
+	 */
 	public boolean addCustomer(Customer cust) {
 		boolean bAdd = false;
 		try {
@@ -37,9 +44,7 @@ public class CustomerDao {
 			customer.setPhone(cust.getPhone());
 			customer.setEmail(cust.getEmail());
 			customer.setPincode(cust.getPincode());
-
-			// TODO - callback listeners to be added
-			customer.setStatus(cust.getStatus());
+			//customer.setStatus(cust.getStatus());
 
 			session.save(customer);
 			tx.commit();
@@ -51,6 +56,11 @@ public class CustomerDao {
 		return bAdd;
 	}
 
+	/**
+	 * @param id
+	 * @param cust
+	 * @return rowCount value after updation
+	 */
 	public int updateCustomer(int id, Customer cust) {
 		if (id <= 0)
 			return 0;
@@ -80,6 +90,10 @@ public class CustomerDao {
 		return rowCount;
 	}
 
+	/**
+	 * @param id
+	 * @return rowcount value after deletion
+	 */
 	public int deleteCustomer(int id) {
 		int rowCount = 0;
 		try {
