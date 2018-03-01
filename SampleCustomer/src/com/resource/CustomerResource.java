@@ -48,7 +48,7 @@ public class CustomerResource {
 	@POST
 	@Path("/create")
 	@Consumes("application/json")
-	public Response addCustomer(/*@Valid*/ Customer cust) {
+	public Response addCustomer(@Valid Customer cust) {
 		cust.setName(cust.getName());
 		cust.setEmail(cust.getEmail());
 		cust.setPhone(cust.getPhone());

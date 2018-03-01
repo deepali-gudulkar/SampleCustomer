@@ -46,7 +46,6 @@ public class CustomerDao {
 			customer.setPhone(cust.getPhone());
 			customer.setEmail(cust.getEmail());
 			customer.setPincode(cust.getPincode());
-			//customer.setStatus(cust.getStatus());
 
 			session.save(customer);
 			tx.commit();

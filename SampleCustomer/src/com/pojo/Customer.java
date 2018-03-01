@@ -17,8 +17,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  * @author Deepali Pojo class for Customer
  */
@@ -59,17 +57,6 @@ public class Customer implements Serializable {
 	@Column(name = "status")
 	@Pattern(regexp = "[a-zA-Z]+", message = "Invalid Status")
 	private String status;
-
-	public Customer() {
-	}
-
-	public Customer(@JsonProperty("name") String name, @JsonProperty("phone") Long phone,
-			@JsonProperty("email") String email, @JsonProperty("pincode") String pincode) {
-		this.name = name;
-		this.phone = phone;
-		this.email = email;
-		this.pincode = pincode;
-	}
 
 	public int getId() {
 		return id;
