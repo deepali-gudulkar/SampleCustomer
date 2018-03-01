@@ -3,6 +3,8 @@ package com.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.ConstraintViolationException;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -52,6 +54,9 @@ public class CustomerDao {
 			bAdd = true;
 		} catch (Exception e) {
 			System.out.println("Exception occurred in addCustomer() - " + e);
+			if(e instanceof ConstraintViolationException) {
+				throw new ConstraintViolationException(((ConstraintViolationException) e).getConstraintViolations());
+			}
 		}
 		return bAdd;
 	}

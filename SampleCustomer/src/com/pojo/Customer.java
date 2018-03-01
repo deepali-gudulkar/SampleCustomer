@@ -8,13 +8,19 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
- * @author Deepali
- *	Pojo class for Customer
+ * @author Deepali Pojo class for Customer
  */
 @Entity
 @Table(name = "CUSTOMER")
@@ -29,16 +35,21 @@ public class Customer implements Serializable {
 	private int id;
 
 	@Column(name = "name")
+	@NotNull(message = "Name should not be null")
+	@Size(min = 3, message = "Name should have atleast 3 characters")
 	@Pattern(regexp = "[a-zA-Z]+", message = "Invalid Name")
 	private String name;
 
 	@Column(name = "phone")
-	@NotNull
-	@Pattern(regexp = "[0-9]+", message = "Invalid Phone Number")
+	@NotNull(message = "Phone number should not be null")
+	@Digits(integer = 10, fraction = 0, message = "Phone number should be only 10 digits")
 	private Long phone;
 
 	@Column(name = "email")
-	@Pattern(regexp = ".+@.+\\.[a-z]+", message = "Invalid Email Address")
+	@NotNull(message = "Email should not be null")
+	@NotBlank(message = "Email should not be blank")
+	@Email(message = "Email should be valid")
+	// @Pattern(regexp = ".+@.+\\.[a-z]+", message = "Invalid Email Address")
 	private String email;
 
 	@Column(name = "pincode")
@@ -48,6 +59,17 @@ public class Customer implements Serializable {
 	@Column(name = "status")
 	@Pattern(regexp = "[a-zA-Z]+", message = "Invalid Status")
 	private String status;
+
+	public Customer() {
+	}
+
+	public Customer(@JsonProperty("name") String name, @JsonProperty("phone") Long phone,
+			@JsonProperty("email") String email, @JsonProperty("pincode") String pincode) {
+		this.name = name;
+		this.phone = phone;
+		this.email = email;
+		this.pincode = pincode;
+	}
 
 	public int getId() {
 		return id;

@@ -2,24 +2,29 @@ package com.exception;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import javax.ws.rs.core.MediaType;
+import javax.validation.ValidationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class ValidationExceptionMapper implements ExceptionMapper<javax.validation.ValidationException> {
+public class ValidationExceptionMapper implements ExceptionMapper<ValidationException> {
 
-    @Override
-    public Response toResponse(javax.validation.ValidationException e) {
-        final StringBuilder strBuilder = new StringBuilder();
-        for (ConstraintViolation<?> cv : ((ConstraintViolationException) e).getConstraintViolations()) {
-            strBuilder.append(cv.getPropertyPath().toString() + " " + cv.getMessage());
-        }
-        return Response
-                .status(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())
-                .type(MediaType.TEXT_PLAIN)
-                .entity(strBuilder.toString())
-                .build();
-    }
+	@Override
+	public Response toResponse(ValidationException e) {
+
+		return Response.status(Response.Status.BAD_REQUEST).entity(prepareMessage(e)).type("text/plain").build();
+
+	}
+
+	private String prepareMessage(ValidationException exception) {
+		if (exception instanceof ConstraintViolationException) {
+			final StringBuilder strBuilder = new StringBuilder();
+			for (ConstraintViolation<?> cv : ((ConstraintViolationException) exception).getConstraintViolations()) {
+				strBuilder.append(cv.getPropertyPath().toString() + " " + cv.getMessage());
+			}
+			return strBuilder.toString();
+		}
+		return null;
+	}
 }
