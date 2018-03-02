@@ -8,14 +8,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.Length;
+
+import com.utils.Patterns;
+import com.utils.ValidationMessages;
 
 /**
  * @author Deepali Pojo class for Customer
@@ -33,29 +35,30 @@ public class Customer implements Serializable {
 	private int id;
 
 	@Column(name = "name")
-	@NotNull(message = "Name should not be null")
-	@Size(min = 3, message = "Name should have atleast 3 characters")
-	@Pattern(regexp = "[a-zA-Z]+", message = "Invalid Name")
+	@NotNull(message = ValidationMessages.MESSAGE_NAME_NULL)
+	@Size(min = 3, message = ValidationMessages.MESSAGE_NAME_LENGTH)
+	@Pattern(regexp = Patterns.REGEX_ALPHA, message = ValidationMessages.MESSAGE_NAME_INVALID)
 	private String name;
 
 	@Column(name = "phone")
-	@NotNull(message = "Phone number should not be null")
-	@Digits(integer = 10, fraction = 0, message = "Phone number should be only 10 digits")
-	private Long phone;
+	@NotNull(message = ValidationMessages.MESSAGE_PHONE_NULL)
+	@Pattern(regexp = Patterns.REGEX_NUMERIC, message = ValidationMessages.MESSAGE_PHONE_INVALID)
+	@Length(min = 10, max = 10, message = ValidationMessages.MESSAGE_PHONE_LENGTH)
+	private String phone;
 
 	@Column(name = "email")
-	@NotNull(message = "Email should not be null")
-	@NotBlank(message = "Email should not be blank")
-	@Email(message = "Email should be valid")
-	// @Pattern(regexp = ".+@.+\\.[a-z]+", message = "Invalid Email Address")
+	@NotNull(message = ValidationMessages.MESSAGE_EMAIL_NULL)
+	@Size(min = 5, max = 50, message = ValidationMessages.MESSAGE_EMAIL_LENGTH)
+	@Email(message = ValidationMessages.MESSAGE_EMAIL_INVALID)
 	private String email;
 
 	@Column(name = "pincode")
-	@Pattern(regexp = "^[a-zA-Z0-9]*$|[0-9]+|[a-zA-Z]+", message = "Invalid Pincode")
+	@Pattern(regexp = Patterns.REGEX_PINCODE, message = ValidationMessages.MESSAGE_PINCODE_INVALID)
+	@Length(min = 6, max = 6, message = ValidationMessages.MESSAGE_PINCODE_LENGTH)
 	private String pincode;
 
 	@Column(name = "status")
-	@Pattern(regexp = "[a-zA-Z]+", message = "Invalid Status")
+	@Pattern(regexp = Patterns.REGEX_ALPHA, message = ValidationMessages.MESSAGE_STATUS_INVALID)
 	private String status;
 
 	public int getId() {
@@ -74,11 +77,11 @@ public class Customer implements Serializable {
 		this.name = name;
 	}
 
-	public Long getPhone() {
+	public String getPhone() {
 		return phone;
 	}
 
-	public void setPhone(Long phone) {
+	public void setPhone(String phone) {
 		this.phone = phone;
 	}
 

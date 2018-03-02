@@ -19,6 +19,10 @@
 			<param-name>jersey.config.server.provider.packages</param-name>
 			<param-value>com.resource</param-value>
 		</init-param>
+		<init-param>
+			<param-name>jersey.config.beanValidation.enableOutputValidationErrorEntity.server</param-name>
+			<param-value>true</param-value>
+		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>

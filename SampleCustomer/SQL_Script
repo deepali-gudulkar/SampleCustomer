@@ -9,3 +9,5 @@ CREATE TABLE IF NOT EXISTS CUSTOMER (
 	status varchar(255) DEFAULT '',
 	PRIMARY KEY (id)
 );
+
+alter table customer modify column phone varchar(20);

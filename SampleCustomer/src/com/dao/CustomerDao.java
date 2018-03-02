@@ -3,8 +3,6 @@ package com.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.ConstraintViolationException;
-
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -33,10 +31,10 @@ public class CustomerDao {
 
 	/**
 	 * @param cust
-	 * @return boolean value after addition
+	 * @return id value after customer addition
 	 */
-	public boolean addCustomer(Customer cust) {
-		boolean bAdd = false;
+	public int addCustomer(Customer cust) {
+		int id = 0;
 		try {
 			Session session = SessionUtil.getSession();
 			Transaction tx = session.beginTransaction();
@@ -48,16 +46,13 @@ public class CustomerDao {
 			customer.setPincode(cust.getPincode());
 
 			session.save(customer);
+			id = customer.getId();
 			tx.commit();
 			session.close();
-			bAdd = true;
 		} catch (Exception e) {
 			System.out.println("Exception occurred in addCustomer() - " + e);
-			if(e instanceof ConstraintViolationException) {
-				throw new ConstraintViolationException(((ConstraintViolationException) e).getConstraintViolations());
-			}
 		}
-		return bAdd;
+		return id;
 	}
 
 	/**
@@ -72,18 +67,21 @@ public class CustomerDao {
 		try {
 			Session session = SessionUtil.getSession();
 			Transaction tx = session.beginTransaction();
-			String hql = "update Customer set name = :name, email =:email, pincode =:pincode, phone =:phone where id = :id";
+			String hql = "update Customer set ";
 
+			if (cust.getName() != null && !(cust.getName().equals("")))
+				hql+= "name = '" + cust.getName() + "' ,";
+			if (cust.getEmail() != null && !(cust.getEmail().equals("")))
+				hql+= "email = '" + cust.getEmail() + "' ,";
+			if (cust.getPhone() != null)
+				hql+="phone = '" + cust.getPhone() + "',";
+			if (cust.getPincode() != null && !(cust.getPincode().equals("")))
+				hql+="pincode ='" + cust.getPincode() + "'";
+			if(hql.endsWith(","))
+				hql = hql.substring(0,hql.length() -1);
+			hql+= " where id = " + id;
+			
 			Query query = session.createQuery(hql);
-			query.setInteger("id", id);
-			if(cust.getName() != null && !(cust.getName().equals("")))
-				query.setString("name", cust.getName());
-			if(cust.getEmail() != null && !(cust.getEmail().equals("")))
-				query.setString("email", cust.getEmail());
-			if(cust.getPhone() != null)
-				query.setLong("phone", cust.getPhone());
-			if(cust.getPincode() != null && !(cust.getPincode().equals("")))
-				query.setString("pincode", cust.getPincode());
 			rowCount = query.executeUpdate();
 
 			tx.commit();

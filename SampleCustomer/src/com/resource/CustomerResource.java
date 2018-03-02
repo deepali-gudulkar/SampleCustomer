@@ -16,14 +16,12 @@ import javax.ws.rs.core.Response;
 
 import com.dao.CustomerDao;
 import com.pojo.Customer;
+import com.utils.ValidationMessages;
 
 /**
- * @author Deepali
- *	This class acts as a controller that accepts requests from the outside world
- *	to fetch the customers,
- *	to create new customers
- *	to update existing customers
- *	to delete customers
+ * @author Deepali This class acts as a controller that accepts requests from
+ *         the outside world to fetch the customers, to create new customers to
+ *         update existing customers to delete customers
  */
 @Path("/customers")
 public class CustomerResource {
@@ -38,12 +36,13 @@ public class CustomerResource {
 		CustomerDao dao = new CustomerDao();
 		@SuppressWarnings("rawtypes")
 		List customers = dao.getCustomers();
-		return (List<Customer>)  customers ;
+		return (List<Customer>) customers;
 	}
 
 	/**
 	 * @param cust
-	 * @return Response OK for creation successful, Response BadRequest for creation failed
+	 * @return Response OK for creation successful, Response BadRequest for creation
+	 *         failed
 	 */
 	@POST
 	@Path("/create")
@@ -53,46 +52,50 @@ public class CustomerResource {
 		cust.setEmail(cust.getEmail());
 		cust.setPhone(cust.getPhone());
 		cust.setPincode(cust.getPincode());
-		
+
 		CustomerDao dao = new CustomerDao();
-		boolean status = dao.addCustomer(cust);
-		
-		if(status)
-			return Response.ok().build();
+		int id = dao.addCustomer(cust);
+
+		if (id > 0)
+			return Response.ok().entity(ValidationMessages.MESSAGE_CUSTOMER_ADDED + id).type("text/plain").build();
 		return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 	}
 
 	/**
 	 * @param id
 	 * @param cust
-	 * @return Response OK for updation successful, Response BadRequest for updation failed
+	 * @return Response OK for updation successful, Response BadRequest for updation
+	 *         failed
 	 */
 	@PUT
 	@Path("/update/{id}")
 	@Consumes("application/json")
-	public Response updateCustomer(@Min(1) @PathParam("id") int id, @Valid Customer cust) {
+	public Response updateCustomer(
+			@Min(value = 1, message = ValidationMessages.MESSAGE_ID_VALID) @PathParam("id") int id,
+			@Valid Customer cust) {
 		CustomerDao dao = new CustomerDao();
 		int count = dao.updateCustomer(id, cust);
 		if (count == 0) {
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		}
-		return Response.ok().build();
+		return Response.ok().entity(ValidationMessages.MESSAGE_CUSTOMER_UPDATED + id).type("text/plain").build();
 	}
 
-	
 	/**
 	 * @param id
-	 * @return Response OK for deletion successful, Response BadRequest for deletion failed
+	 * @return Response OK for deletion successful, Response BadRequest for deletion
+	 *         failed
 	 */
 	@DELETE
 	@Path("/delete/{id}")
 	@Consumes("application/json")
-	public Response deleteCustomer(@Min(1) @PathParam("id") int id) {
+	public Response deleteCustomer(
+			@Min(value = 1, message = ValidationMessages.MESSAGE_ID_VALID) @PathParam("id") int id) {
 		CustomerDao dao = new CustomerDao();
 		int count = dao.deleteCustomer(id);
 		if (count == 0) {
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		}
-		return Response.ok().build();
+		return Response.ok().entity(ValidationMessages.MESSAGE_CUSTOMER_DELETED + id).type("text/plain").build();
 	}
 }
